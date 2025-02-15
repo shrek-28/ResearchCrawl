@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resource Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #444;
+        }
+        form {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .repo-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .repo-card h3 {
+            margin: 0 0 10px;
+            color: #007bff;
+        }
+        .repo-card p {
+            margin: 5px 0;
+        }
+        .readme-summary {
+            color: #007bff;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        /* Dialog Box Styles */
+        .dialog-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .dialog-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .dialog-box h3 {
+            margin-top: 0;
+        }
+        .dialog-box .close-btn {
+            float: right;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        .dialog-box .readme-content {
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            background: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Resource Search</h1>
+        <form method="POST">
+            <input type="text" name="search_prompt" placeholder="Enter search prompt" required>
+            <button type="submit">Search</button>
+        </form>
+
+        {% if trending_repos %}
+            <h2>Trending Repositories</h2>
+            {% for repo in trending_repos %}
+                <div class="repo-card">
+                    <h3><a href="{{ repo.url }}" target="_blank">{{ repo.name }}</a></h3>
+                    <p>{{ repo.description }}</p>
+                    <p><strong>Stars:</strong> {{ repo.stars }} | <strong>Forks:</strong> {{ repo.forks }}</p>
+                    <!-- <p class="readme-summary" onclick="showReadme('{{ repo.readme_content | escape }}')">View README Summary</p> -->
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if latest_repos %}
+            <h2>Latest Repositories</h2>
+            {% for repo in latest_repos %}
+                <div class="repo-card">
+                    <h3><a href="{{ repo.url }}" target="_blank">{{ repo.name }}</a></h3>
+                    <p>{{ repo.description }}</p>
+                    <p><strong>Stars:</strong> {{ repo.stars }} | <strong>Forks:</strong> {{ repo.forks }}</p>
+                    <!-- <p class="readme-summary" onclick="showReadme('{{ repo.readme_content | escape }}')">View README Summary</p> -->
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if most_used_repos %}
+            <h2>Most Used Repositories</h2>
+            {% for repo in most_used_repos %}
+                <div class="repo-card">
+                    <h3><a href="{{ repo.url }}" target="_blank">{{ repo.name }}</a></h3>
+                    <p>{{ repo.description }}</p>
+                    <p><strong>Stars:</strong> {{ repo.stars }} | <strong>Forks:</strong> {{ repo.forks }}</p>
+                    <!-- <p class="readme-summary" onclick="showReadme('{{ repo.readme_content | escape }}')">View README Summary</p> -->
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if resources %}
+            <h2>Most Used Resources</h2>
+            {% for resource in resources %}
+                <div class="repo-card">
+                    <h3><a href="{{ resource.url }}" target="_blank">{{ resource.title }}</a></h3>
+                    <p><strong>Platform:</strong> {{ resource.platform }} | <strong>Usage Count:</strong> {{ resource.usage_count }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- Dialog Box -->
+    <div class="dialog-overlay" id="dialogOverlay">
+        <div class="dialog-box">
+            <span class="close-btn" onclick="closeDialog()">&times;</span>
+            <h3>README Summary</h3>
+            <div class="readme-content" id="readmeContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Function to show the README content in a dialog box
+        function showReadme(content) {
+            document.getElementById('readmeContent').textContent = content;
+            document.getElementById('dialogOverlay').style.display = 'flex';
+        }
+
+        // Function to close the dialog box
+        function closeDialog() {
+            document.getElementById('dialogOverlay').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
